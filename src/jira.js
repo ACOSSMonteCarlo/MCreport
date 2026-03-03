@@ -1,3 +1,9 @@
+const JIRA_BASE_URL = "https://aldi-sued.atlassian.net"; // z.B. https://meinefirma.atlassian.net
+const EMAIL = "extern.first_name.last_name@aldi-sued.com";
+const API_TOKEN = "Some_API_Token"; // https://id.atlassian.com/manage-profile/security/api-tokens
+
+const authHeader = "Basic " + Buffer.from(`${EMAIL}:${API_TOKEN}`).toString("base64");
+
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) {
     module.exports = factory();
@@ -109,6 +115,30 @@
     return results;
   }
 
+  async function fetchIssueBatch_APIKey(issueKeys = []){
+    for (){
+      const url = `${JIRA_BASE_URL}/rest/agile/1.0/board/${BOARD_ID}/issue?startAt=${startAt}&maxResults=${maxResults}`; //needs to be adjusted
+      
+       const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: authHeader,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Fehler: ${response.status} - ${error}`);
+      }
+  
+      const data = await response.json();
+  
+      issueMap.set(issue.key, data.issues);
+    }
+    return issueMap;
+  }
+  
   async function fetchIssuesBatch(jiraDomain, issueKeys = [], { ttl = CACHE_TTL, forceRefresh = false } = {}) {
     const BATCH_SIZE = 100;
     const issueMap = new Map();
