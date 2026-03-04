@@ -116,8 +116,8 @@ const authHeader = "Basic " + Buffer.from(`${EMAIL}:${API_TOKEN}`).toString("bas
   }
 
   async function fetchIssueBatch_APIKey(issueKeys = []){
-    for (){
-      const url = `${JIRA_BASE_URL}/rest/agile/1.0/board/${BOARD_ID}/issue?startAt=${startAt}&maxResults=${maxResults}`; //needs to be adjusted
+    for (const key of issueKeys){
+      const url = `${JIRA_BASE_URL}/rest/api/3/issue/${key}`;
       
        const response = await fetch(url, {
         method: "GET",
@@ -219,5 +219,5 @@ const authHeader = "Basic " + Buffer.from(`${EMAIL}:${API_TOKEN}`).toString("bas
     return issueMap;
   }
 
-  return { fetchBoardsByJql, fetchIssue, fetchSprint, fetchIssuesBatch, clearCache };
+  return { fetchBoardsByJql, fetchIssue, fetchSprint, fetchIssueBatch_APIKey, clearCache };
 }));
